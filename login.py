@@ -1,3 +1,4 @@
+import os
 import crypto
 
 
@@ -12,8 +13,8 @@ def input_user():
 
 
 def is_new_user(user):
-    with open("users.txt", "r", encoding="utf-8") as users_file:
-        users_content = users_file.read()
+    with open("users.txt", "rb") as users_file:
+        users_content = str(users_file.read())
         if user in users_content:
             return False
         else:
@@ -21,15 +22,17 @@ def is_new_user(user):
 
 
 def write_new_user(user):
-    with open("users.txt", "a", encoding="utf-8") as users_file:
-        users_file.write(user + ":")
+    salt = os.urandom(32)
+    with open("users.txt", "ab") as users_file:
+        user_string = (user + ":").encode("utf-8")
+        users_file.write(user_string + salt + "\n".encode("utf-8"))
     return
 
 
-def input_master_password():
+def create_master_password():
     while True:
         master_password = input("Now, please input your master password. "
-                                + "Don't worry, it will be encrypted, just "
+                                + "Don't worry, it won't be stored. Just "
                                 + "pick one you will remember with at "
                                 + "least 8 characters!\n")
         if len(master_password) < 8:
@@ -45,46 +48,9 @@ def input_master_password():
     return master_password
 
 
-def create_master_key(master_password):
-    master_key = crypto.generate_master_key(master_password)
-    with open("users.txt", "a", encoding="utf-8") as users_file:
-        users_file.write(str(master_key) + "\n")
-    return
-
-
-def get_user_key(user):
-    with open("users.txt", "r", encoding="utf-8") as users_file:
+def get_user_salt(user):
+    with open("users.txt", "rb") as users_file:
         for line in users_file.readlines():
-            if user in line:
-                user_key = line[len(user)+1:-1]
-    return user_key
-
-
-def verify_user_key(user_key):
-    i = 0
-    while i < 5:
-        input_key = input("Now please insert your master password to access "
-                          + "the manager.\n")
-        verified_key = crypto.generate_master_key(input_key)
-        if str(user_key) == str(verified_key):
-            return True
-        else:
-            print("This try failed.")
-        i += 1
-    print("Too many failures, please try another username.")
-    return False
-
-
-def login():
-    while True:
-        user = input_user()
-        if is_new_user(user):
-            write_new_user(user)
-            master_password = input_master_password()
-            create_master_key(master_password)
-        user_key = get_user_key(user)
-        if verify_user_key(user_key):
-            break
-
-    print("Success! You're in!")
-    return
+            if user.encode("utf-8") in line:
+                user_salt = line[len(user)+1:-1]
+    return user_salt
