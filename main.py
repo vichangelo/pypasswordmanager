@@ -15,10 +15,25 @@ user_salt = login.get_user_salt(user)
 print("Success! You're in!")
 
 while True:
-    decrypted_passwords = ops.read_passwords(master_password, user_salt)
+    decrypted_passwords = ops.read_passwords(user, master_password,
+                                             user_salt)
     ops.display_passwords(decrypted_passwords)
-    decision = input("Now input 'C' to create a new password.\n")
+    decision = input("Now input C to create a new password or D to "
+                     + "delete a password.\n")
+
     if decision == "C":
         service_password = ops.input_new_password()
-        ops.write_new_password(service_password, master_password, user_salt)
+        ops.write_new_password(user, service_password, master_password,
+                               user_salt)
+
+    if decision == "D":
+        service = input("Enter the name of the service you want to delete "
+                        + "the password from.\n")
+        remaster_password = input("Now confirm your master password.")
+        if remaster_password == master_password:
+            ops.delete_password(user, service, decrypted_passwords)
+        else:
+            print("Incorrect master password.")
+
+
 exit()

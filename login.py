@@ -1,5 +1,4 @@
 import os
-import crypto
 
 
 def input_user():
@@ -26,6 +25,11 @@ def write_new_user(user):
     with open("users.txt", "ab") as users_file:
         user_string = (user + ":").encode("utf-8")
         users_file.write(user_string + salt + "\n".encode("utf-8"))
+
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, "passwords/" + user + ".txt")
+    f = open(filename, "x")
+    f.close()
     return
 
 
