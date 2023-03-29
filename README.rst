@@ -10,9 +10,10 @@ supports user creation, adding passwords and deleting them.
 
 Installation and Usage
 ======================
-Just clone this repository and run the *main.py* script.
+Just install the source code with pip and run *pypasswordmanager* in the
+terminal.
 
 Documentation
 =============
-This app has full documentation that can be accessed in
-*"docs/build/html/index.html"*.
+This app has full documentation (generated via Sphinx) that can be accessed in
+*"docs/build/html/"*.
