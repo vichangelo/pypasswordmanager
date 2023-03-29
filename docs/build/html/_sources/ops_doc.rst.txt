@@ -1,0 +1,6 @@
+###
+Ops
+###
+
+.. automodule:: ops
+   :members:

@@ -1,0 +1,6 @@
+######
+Crypto
+######
+
+.. automodule:: crypto
+   :members:

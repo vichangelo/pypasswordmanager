@@ -2,11 +2,15 @@
 
 Imports
 -------
-:mod:`os`: for salt generation (``os.urandom``) and path functions.
+:mod:`os`: for salt generation (:func:`os.urandom`).
+
+:mod:`datahelper`: for getting data file paths.
 
 Functions
 ---------
-:func:`input_user`: receives which user the session is for.
+:func:`first_login`: create a users file.
+
+:func:`user_input`: receive which user the session is for.
 
 :func:`is_new_user`: check for a new user.
 
@@ -15,9 +19,21 @@ Functions
 :func:`get_user_salt`: get user's salt from disk.
 """
 import os
+import pypasswordmanager.datahelper as datahelper
 
 
-def input_user():
+def first_login():
+    """Create a users file if this is the first use of the app."""
+    users_path = datahelper.get_file_path("users.txt")
+    if os.path.exists(users_path):
+        return
+    else:
+        users_file = open(users_path, "x")
+        users_file.close()
+        return
+
+
+def user_input() -> str:
     """Receive input for username.
 
     Receives input from user to determine username for the session.
@@ -25,7 +41,7 @@ def input_user():
     characters long. Returns username.
 
     :return: the username for the session.
-    :rtype: string
+    :rtype: str
     """
     while True:
         user = input("Insert your username, or a new one to create it. ")
@@ -36,7 +52,7 @@ def input_user():
     return user
 
 
-def is_new_user(user):
+def is_new_user(user: str) -> bool:
     """Check if username belongs to existing user or not.
 
     Reads the users file and checks if the username is in it.
@@ -44,7 +60,8 @@ def is_new_user(user):
     :returns: if the username is new or not.
     :rtype: bool
     """
-    with open("users.txt", "rb") as users_file:
+    users_path = datahelper.get_file_path("users.txt")
+    with open(users_path, "rb") as users_file:
         users_content = str(users_file.read())
         if user in users_content:
             return False
@@ -52,7 +69,7 @@ def is_new_user(user):
             return True
 
 
-def write_new_user(user):
+def write_new_user(user: str):
     """Write new user information to disk.
 
     Generates random salt using `os` library, opens users file in binary
@@ -60,23 +77,23 @@ def write_new_user(user):
     user passwords in password folder.
 
     :param user: username.
-    :type user: string
+    :type user: str
     :var salt: user's salt.
     :type salt: bytes
     """
     salt = os.urandom(32)
-    with open("users.txt", "ab") as users_file:
+    users_path = datahelper.get_file_path("users.txt")
+    with open(users_path, "ab") as users_file:
         user_string = (user + ":").encode("utf-8")
         users_file.write(user_string + salt + "\n".encode("utf-8"))
 
-    dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, "passwords/" + user + ".txt")
-    f = open(filename, "x")
+    password_path = datahelper.get_file_path(user + ".txt")
+    f = open(password_path, "x")
     f.close()
     return
 
 
-def create_master_password():
+def create_master_password() -> str:
     """Receive input of a new master password for the session.
 
     Uses a while loop to ensure the user creates a password at least
@@ -84,13 +101,15 @@ def create_master_password():
     session.
 
     :return: the new master password.
-    :rtype: string
+    :rtype: str
     """
     while True:
-        master_password = input("Now, please input your master password. "
-                                + "Don't worry, it won't be stored. Just "
-                                + "pick one you will remember with at "
-                                + "least 8 characters! ")
+        master_password = input(
+            "Now, please input your master password. "
+            + "Don't worry, it won't be stored. Just "
+            + "pick one you will remember with at "
+            + "least 8 characters! "
+        )
         if len(master_password) < 8:
             print("Master password too short, try again!")
         else:
@@ -98,16 +117,19 @@ def create_master_password():
     remaster_password = input("Please confirm the password. ")
 
     while master_password != remaster_password:
-        master_password = input("Sadly, you got it wrong. Please "
-                                + "input a master password again. ")
+        master_password = input(
+            "Sadly, you got it wrong. Please "
+            + "input a master password again. "
+        )
         remaster_password = input("Please confirm the password. ")
     return master_password
 
 
-def get_user_salt(user):
+def get_user_salt(user: str) -> bytes:
     """Retrieve user's salt from file in binary mode."""
-    with open("users.txt", "rb") as users_file:
+    users_path = datahelper.get_file_path("users.txt")
+    with open(users_path, "rb") as users_file:
         for line in users_file.readlines():
             if user.encode("utf-8") in line:
-                user_salt = line[len(user)+1:-1]
+                user_salt = line[len(user) + 1 : -1]
     return user_salt

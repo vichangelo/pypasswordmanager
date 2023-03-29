@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=67.6.1"]
+requires = ["setuptools>=61.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,6 +8,7 @@ version = "1.0.0"
 description = "Encrypted password manager for the terminal"
 readme = "README.rst"
 requires-python = ">=3.7.0"
+dependencies = ["cryptography"]
 license = {file = "LICENSE"}
 authors = [
     {name = "Victor Angelo", email = "vichangelo1373@gmail.com"}
@@ -24,7 +25,6 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3 :: Only",
     "Operating System :: OS Independent",
-    "Intended Audience :: Other Audience",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Topic :: Security",
     "Topic :: Security :: Cryptography",
@@ -34,49 +34,14 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/vichangelo/pypasswordmanager/"
-"Bug Reports" = "https://github.com/vichangelo/musicinpython/issues/"
+"Bug Reports" = "https://github.com/vichangelo/pypasswordmanager/issues/"
 "Source" = "https://github.com/vichangelo/pypasswordmanager/"
 
-[project.optional-dependencies]
-test = ["coverage", "pytest", "pytest-cov"]
+[project.scripts]
+pypasswordmanager = "pypasswordmanager.main:run"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[tool.flake8]
-max-doc-length = 72
-statistics = true
-max-complexity = 10
-max-expression-complexity = 5
-cohesion-below = 50
-max-function-length = 50
-max-parameters-amount = 3
-rst-roles = ["mod", "class", "func", "data", "attr", "meth", "exc"]
-rst-directives = ["module", "function", "data", "exception", "class", "attribute", "method"]
-
-[tool.pytest.ini_options]
-addopts = """
---cov= 
---cov-config=/home/victor-files/projects/pypasswordmanager/pyproject.toml 
---cov-branch 
---cov-report=term 
---cov-report=lcov:./coverage.lcov 
-"""
-testpaths = "tests"
-
-[tool.coverage]
-[tool.coverage.run]
-source = ["pypasswordmanager", "tests"]
-
-[tool.coverage.report]
-exclude_lines = [
-              "pragma: no cover",
-              "if __name__ == .__main__.:",
-              "def ([a-z_])+input"
-]
-ignore_errors = true
-skip_empty = true
-sort = "-cover"

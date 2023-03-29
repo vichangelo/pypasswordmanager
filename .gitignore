@@ -4,3 +4,4 @@ data/
 .dir-locals.el
 dist/
 pypasswordmanager.e*/
+__pycache__/
