@@ -60,6 +60,7 @@ def run():
                 break
         print("Success! You're in!")
 
+    user_salt = login.get_user_salt(user)
     while True:
         decrypted_passwords = ops.read_passwords(
             user, master_password, user_salt
