@@ -38,7 +38,6 @@ import pypasswordmanager.ops as ops
 
 
 def run():
-    login.first_login()
     print("Welcome to the encrypted password manager written in python!")
 
     user = login.user_input()
