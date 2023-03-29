@@ -1,0 +1,6 @@
+venv/
+data/
+*coverage*
+.dir-locals.el
+dist/
+pypasswordmanager.e*/
