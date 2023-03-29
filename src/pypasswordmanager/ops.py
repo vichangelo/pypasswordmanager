@@ -18,7 +18,7 @@ Functions
 
 :func:`delete_password`: delete password from disk.
 """
-import crypto
+import pypasswordmanager.crypto as crypto
 import pypasswordmanager.datahelper as datahelper
 
 
