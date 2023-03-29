@@ -8,8 +8,6 @@ Imports
 
 Functions
 ---------
-:func:`first_login`: create a users file.
-
 :func:`user_input`: receive which user the session is for.
 
 :func:`is_new_user`: check for a new user.
@@ -20,17 +18,6 @@ Functions
 """
 import os
 import pypasswordmanager.datahelper as datahelper
-
-
-def first_login():
-    """Create a users file if this is the first use of the app."""
-    users_path = datahelper.get_file_path("users.txt")
-    if os.path.exists(users_path):
-        return
-    else:
-        users_file = open(users_path, "x")
-        users_file.close()
-        return
 
 
 def user_input() -> str:
